@@ -1,0 +1,341 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "User API",
+      "version": "1.0.0"
+    },
+    "paths": {
+      "/api/users/login/social": {
+        "post": {
+          "summary": "Social login",
+          "description": "Authenticate user via social login (Google or Apple).",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "provider": {
+                      "type": "string",
+                      "description": "Social login provider (e.g., 'google' or 'apple')",
+                      "example": "google"
+                    },
+                    "token": {
+                      "type": "string",
+                      "description": "Authentication token provided by the social login provider",
+                      "example": "social-provider-token"
+                    },
+                    "fcmToken": {
+                      "type": "string",
+                      "description": "Firebase Cloud Messaging (FCM) token for push notifications",
+                      "example": "fcm-token"
+                    }
+                  },
+                  "required": ["provider", "token"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful social login",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Login Successfully"
+                      },
+                      "payload": {
+                        "type": "object",
+                        "properties": {
+                          "token": {
+                            "type": "string",
+                            "example": "jwt-token"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request due to missing or invalid parameters, or unsupported provider",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Unsupported provider"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Social login error"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/users/login": {
+        "post": {
+          "summary": "Email login",
+          "description": "Authenticate user via email and password.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "example": "user@example.com"
+                    },
+                    "password": {
+                      "type": "string",
+                      "example": "yourpassword"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful login",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Login Successfully"
+                      },
+                      "payloads": {
+                        "type": "object",
+                        "properties": {
+                          "token": {
+                            "type": "string",
+                            "example": "your-jwt-token"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Email and password are required"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Invalid credentials"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Something went wrong"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/users/register": {
+        "post": {
+          "summary": "User registration",
+          "description": "Register a new user with name, surname, email, birthday, and password.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "John"
+                    },
+                    "surname": {
+                      "type": "string",
+                      "example": "Doe"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "user@example.com"
+                    },
+                    "birthday": {
+                      "type": "string",
+                      "format": "date",
+                      "example": "2000-01-01"
+                    },
+                    "password": {
+                      "type": "string",
+                      "example": "yourpassword"
+                    }
+                  },
+                  "required": ["name", "email", "birthday", "password"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "User registered successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Account Created Successfully"
+                      },
+                      "payload": {
+                        "type": "object",
+                        "properties": {
+                          "user": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "12345"
+                              },
+                              "email": {
+                                "type": "string",
+                                "example": "user@example.com"
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "John"
+                              },
+                              "surname": {
+                                "type": "string",
+                                "example": "Doe"
+                              },
+                              "birthday": {
+                                "type": "string",
+                                "format": "date",
+                                "example": "2000-01-01"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request due to missing or invalid fields",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Name is required"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "409": {
+              "description": "Conflict, e.g., email already exists",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Email already exists"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Something went wrong"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
